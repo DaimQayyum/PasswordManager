@@ -9,13 +9,23 @@ class LoginFrame(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
+        self.setup_ui()
+
+    def setup_ui(self):
+        # Configure frame to expand properly
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        
+        # Main content frame
+        main_frame = tk.Frame(self)
+        main_frame.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
         
         # Title
-        title_label = tk.Label(self, text="Password Manager Login", font=("Arial", 16, "bold"))
+        title_label = tk.Label(main_frame, text="Password Manager Login", font=("Arial", 16, "bold"))
         title_label.pack(pady=20)
         
         # Password frame
-        pw_frame = tk.Frame(self)
+        pw_frame = tk.Frame(main_frame)
         pw_frame.pack(pady=10)
         
         tk.Label(pw_frame, text="Master Password:", font=("Arial", 12)).pack(anchor="w")
@@ -33,13 +43,13 @@ class LoginFrame(tk.Frame):
         self.show_password_check.pack(side="right", padx=(5, 0))
         
         # Login button
-        login_button = tk.Button(self, text="Login", command=self.login, 
+        login_button = tk.Button(main_frame, text="Login", command=self.login, 
                                bg="green", fg="white", font=("Arial", 11, "bold"), 
                                width=15, height=2)
         login_button.pack(pady=15)
         
         # Forgot Password link
-        forgot_link = tk.Label(self, text="Forgot Password?", fg="blue", cursor="hand2", 
+        forgot_link = tk.Label(main_frame, text="Forgot Password?", fg="blue", cursor="hand2", 
                              font=("Arial", 10, "underline"))
         forgot_link.pack(pady=5)
         forgot_link.bind("<Button-1>", self.forgot_password)

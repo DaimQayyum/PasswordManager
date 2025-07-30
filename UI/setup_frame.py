@@ -10,12 +10,35 @@ class SetupFrame(tk.Frame):
         self.setup_ui()
 
     def setup_ui(self):
+        # Configure frame to expand properly
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        
+        # Main content frame
+        main_frame = tk.Frame(self)
+        main_frame.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
+        
         # Title
-        title_label = tk.Label(self, text="Set Up Your Password Manager", font=("Arial", 16, "bold"))
+        title_label = tk.Label(main_frame, text="Set Up Your Password Manager", font=("Arial", 16, "bold"))
         title_label.pack(pady=20)
 
+        # Instructions
+        instructions_frame = tk.LabelFrame(main_frame, text="Important Instructions", padx=10, pady=10)
+        instructions_frame.pack(fill="x", padx=20, pady=10)
+        
+        instruction_text = """Welcome to your Password Manager setup!
+
+1. Choose a strong master password that you'll remember
+2. Generate and save your recovery code in a safe place
+3. Optionally answer security questions for additional backup
+4. Keep your master password and recovery code secure
+
+This setup will create your encrypted password vault."""
+        
+        tk.Label(instructions_frame, text=instruction_text, justify="left", wraplength=400).pack(anchor="w")
+
         # Master Password Setup
-        pw_frame = tk.LabelFrame(self, text="Master Password", padx=10, pady=10)
+        pw_frame = tk.LabelFrame(main_frame, text="Master Password", padx=10, pady=10)
         pw_frame.pack(fill="x", padx=20, pady=10)
 
         tk.Label(pw_frame, text="Enter Master Password:").pack(anchor="w")
@@ -48,8 +71,20 @@ class SetupFrame(tk.Frame):
         self.strength_label = tk.Label(pw_frame, text="Strength: ")
         self.strength_label.pack(anchor="w")
 
+        # Password Tips
+        tips_frame = tk.LabelFrame(main_frame, text="Password Security Tips", padx=10, pady=10)
+        tips_frame.pack(fill="x", padx=20, pady=10)
+        
+        tips_text = """• Use at least 12 characters
+• Include uppercase and lowercase letters
+• Include numbers and special characters
+• Avoid common words or patterns
+• Don't reuse passwords from other accounts"""
+        
+        tk.Label(tips_frame, text=tips_text, justify="left", wraplength=400).pack(anchor="w")
+
         # Recovery Code
-        recovery_frame = tk.LabelFrame(self, text="Recovery Code", padx=10, pady=10)
+        recovery_frame = tk.LabelFrame(main_frame, text="Recovery Code", padx=10, pady=10)
         recovery_frame.pack(fill="x", padx=20, pady=10)
 
         tk.Label(recovery_frame, text="Your recovery code (write this down!):", font=("Arial", 10, "bold")).pack(anchor="w")
@@ -61,8 +96,21 @@ class SetupFrame(tk.Frame):
         tk.Button(code_btn_frame, text="Generate Recovery Code", command=self.generate_recovery_code).pack(side="left", padx=5)
         tk.Button(code_btn_frame, text="Copy Code", command=self.copy_recovery_code).pack(side="left", padx=5)
 
+        # Recovery Code Instructions
+        recovery_instructions = tk.LabelFrame(main_frame, text="Recovery Code Instructions", padx=10, pady=10)
+        recovery_instructions.pack(fill="x", padx=20, pady=10)
+        
+        recovery_text = """IMPORTANT: Write down your recovery code and keep it in a safe place!
+
+• This code is your backup if you forget your master password
+• Store it securely (not on your computer)
+• You can use it to reset your master password
+• Without this code, you may lose access to your passwords"""
+        
+        tk.Label(recovery_instructions, text=recovery_text, justify="left", wraplength=400, fg="red").pack(anchor="w")
+
         # Security Questions
-        questions_frame = tk.LabelFrame(self, text="Security Questions (Optional Backup)", padx=10, pady=10)
+        questions_frame = tk.LabelFrame(main_frame, text="Security Questions (Optional Backup)", padx=10, pady=10)
         questions_frame.pack(fill="x", padx=20, pady=10)
 
         self.question_entries = []
@@ -87,11 +135,32 @@ class SetupFrame(tk.Frame):
             self.question_entries.append(question)
             self.answer_entries.append(answer_entry)
 
+        # Security Questions Note
+        security_note = tk.LabelFrame(main_frame, text="Security Questions Note", padx=10, pady=10)
+        security_note.pack(fill="x", padx=20, pady=10)
+        
+        note_text = """Security questions provide an additional recovery method:
+• Answer truthfully but consider using slight variations
+• These can help you recover your account if needed
+• Optional but recommended for better security"""
+        
+        tk.Label(security_note, text=note_text, justify="left", wraplength=400).pack(anchor="w")
+
         # Buttons
-        button_frame = tk.Frame(self)
+        button_frame = tk.Frame(main_frame)
         button_frame.pack(pady=20)
         tk.Button(button_frame, text="Create Vault", command=self.create_vault, bg="green", fg="white").pack(side="left", padx=10)
         tk.Button(button_frame, text="Cancel", command=self.cancel).pack(side="left", padx=10)
+
+        # Final Note
+        final_note = tk.LabelFrame(main_frame, text="Final Note", padx=10, pady=10)
+        final_note.pack(fill="x", padx=20, pady=10)
+        
+        final_text = """Your password vault will be encrypted and stored locally on your computer.
+Only you can access it with your master password or recovery code.
+Your passwords are never sent to any server and remain under your control."""
+        
+        tk.Label(final_note, text=final_text, justify="left", wraplength=400).pack(anchor="w")
 
     def toggle_password_visibility(self):
         """Toggle between showing and hiding the password."""

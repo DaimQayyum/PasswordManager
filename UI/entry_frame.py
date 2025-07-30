@@ -9,23 +9,38 @@ class EntryFrame(tk.Frame):
         self.controller = controller
         self.mode = 'add'  # or 'edit'
         self.edit_site = None
-        tk.Label(self, text="Site:").pack(pady=(20, 0))
-        self.site_entry = tk.Entry(self, width=40)
+        self.setup_ui()
+
+    def setup_ui(self):
+        # Configure frame to expand properly
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        
+        # Main content frame
+        main_frame = tk.Frame(self)
+        main_frame.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
+        
+        tk.Label(main_frame, text="Site:").pack(pady=(20, 0))
+        self.site_entry = tk.Entry(main_frame, width=40)
         self.site_entry.pack(pady=5)
-        tk.Label(self, text="Username:").pack(pady=(10, 0))
-        self.username_entry = tk.Entry(self, width=40)
+        
+        tk.Label(main_frame, text="Username:").pack(pady=(10, 0))
+        self.username_entry = tk.Entry(main_frame, width=40)
         self.username_entry.pack(pady=5)
-        tk.Label(self, text="Password:").pack(pady=(10, 0))
-        pw_frame = tk.Frame(self)
+        
+        tk.Label(main_frame, text="Password:").pack(pady=(10, 0))
+        pw_frame = tk.Frame(main_frame)
         pw_frame.pack(pady=5)
         self.password_entry = tk.Entry(pw_frame, show="*", width=32)
         self.password_entry.pack(side="left")
         self.password_entry.bind('<KeyRelease>', self.update_strength)
         gen_btn = tk.Button(pw_frame, text="Generate", command=self.generate_password)
         gen_btn.pack(side="left", padx=5)
-        self.strength_label = tk.Label(self, text="Strength: ")
+        
+        self.strength_label = tk.Label(main_frame, text="Strength: ")
         self.strength_label.pack()
-        button_frame = tk.Frame(self)
+        
+        button_frame = tk.Frame(main_frame)
         button_frame.pack(pady=20)
         tk.Button(button_frame, text="Save", command=self.save_entry).pack(side="left", padx=10)
         tk.Button(button_frame, text="Cancel", command=self.cancel).pack(side="left", padx=10)

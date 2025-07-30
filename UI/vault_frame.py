@@ -7,18 +7,51 @@ class VaultFrame(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
-        search_frame = tk.Frame(self)
+        self.setup_ui()
+
+    def setup_ui(self):
+        # Configure frame to expand properly
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        
+        # Main content frame
+        main_frame = tk.Frame(self)
+        main_frame.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
+        
+        # Search frame
+        search_frame = tk.Frame(main_frame)
         search_frame.pack(fill="x", pady=5)
         tk.Label(search_frame, text="Search:").pack(side="left", padx=5)
         self.search_entry = tk.Entry(search_frame)
         self.search_entry.pack(side="left", fill="x", expand=True)
         self.search_entry.bind('<KeyRelease>', self.on_search)
-        self.tree = ttk.Treeview(self, columns=("Site", "Username", "Password"), show="headings")
+        
+        # Treeview with scrollbars
+        tree_frame = tk.Frame(main_frame)
+        tree_frame.pack(fill="both", expand=True, pady=10)
+        
+        # Create treeview
+        self.tree = ttk.Treeview(tree_frame, columns=("Site", "Username", "Password"), show="headings")
         self.tree.heading("Site", text="Site")
         self.tree.heading("Username", text="Username")
         self.tree.heading("Password", text="Password")
-        self.tree.pack(fill="both", expand=True, pady=10)
-        button_frame = tk.Frame(self)
+        
+        # Add scrollbars to treeview
+        tree_v_scrollbar = ttk.Scrollbar(tree_frame, orient="vertical", command=self.tree.yview)
+        tree_h_scrollbar = ttk.Scrollbar(tree_frame, orient="horizontal", command=self.tree.xview)
+        self.tree.configure(yscrollcommand=tree_v_scrollbar.set, xscrollcommand=tree_h_scrollbar.set)
+        
+        # Pack treeview and scrollbars
+        self.tree.grid(row=0, column=0, sticky="nsew")
+        tree_v_scrollbar.grid(row=0, column=1, sticky="ns")
+        tree_h_scrollbar.grid(row=1, column=0, sticky="ew")
+        
+        # Configure grid weights
+        tree_frame.grid_rowconfigure(0, weight=1)
+        tree_frame.grid_columnconfigure(0, weight=1)
+        
+        # Button frame
+        button_frame = tk.Frame(main_frame)
         button_frame.pack(fill="x", pady=5)
         tk.Button(button_frame, text="Copy", command=self.copy_entry).pack(side="left", padx=5)
         tk.Button(button_frame, text="Add", command=self.add_entry).pack(side="left", padx=5)

@@ -12,12 +12,33 @@ class RecoveryFrame(tk.Frame):
         self.setup_ui()
 
     def setup_ui(self):
+        # Configure frame to expand properly
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        
+        # Main content frame
+        main_frame = tk.Frame(self)
+        main_frame.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
+        
         # Title
-        title_label = tk.Label(self, text="Recover Master Password", font=("Arial", 16, "bold"))
+        title_label = tk.Label(main_frame, text="Recover Master Password", font=("Arial", 16, "bold"))
         title_label.pack(pady=20)
 
+        # Recovery Instructions
+        instructions_frame = tk.LabelFrame(main_frame, text="Recovery Instructions", padx=10, pady=10)
+        instructions_frame.pack(fill="x", padx=20, pady=10)
+        
+        instruction_text = """If you've forgotten your master password, you can recover access to your password vault using one of the following methods:
+
+1. Recovery Code: Use the recovery code you generated during setup
+2. Security Questions: Answer the security questions you set up
+
+Choose the method you prefer below."""
+        
+        tk.Label(instructions_frame, text=instruction_text, justify="left", wraplength=400).pack(anchor="w")
+
         # Method Selection
-        method_frame = tk.LabelFrame(self, text="Recovery Method", padx=10, pady=10)
+        method_frame = tk.LabelFrame(main_frame, text="Recovery Method", padx=10, pady=10)
         method_frame.pack(fill="x", padx=20, pady=10)
 
         self.method_var = tk.StringVar(value="recovery_code")
@@ -27,13 +48,25 @@ class RecoveryFrame(tk.Frame):
                       value="security_questions", command=self.show_method_ui).pack(anchor="w")
 
         # Recovery Code UI
-        self.recovery_code_frame = tk.LabelFrame(self, text="Recovery Code", padx=10, pady=10)
+        self.recovery_code_frame = tk.LabelFrame(main_frame, text="Recovery Code", padx=10, pady=10)
         tk.Label(self.recovery_code_frame, text="Enter your recovery code:").pack(anchor="w")
         self.recovery_code_entry = tk.Entry(self.recovery_code_frame, width=40, font=("Courier", 10))
         self.recovery_code_entry.pack(fill="x", pady=5)
 
+        # Recovery Code Help
+        recovery_help = tk.LabelFrame(main_frame, text="Recovery Code Help", padx=10, pady=10)
+        recovery_help.pack(fill="x", padx=20, pady=10)
+        
+        recovery_help_text = """If you have your recovery code:
+• Enter it exactly as it was generated
+• The code is case-sensitive
+• Make sure there are no extra spaces
+• If you don't have the code, try security questions instead"""
+        
+        tk.Label(recovery_help, text=recovery_help_text, justify="left", wraplength=400).pack(anchor="w")
+
         # Security Questions UI
-        self.security_questions_frame = tk.LabelFrame(self, text="Security Questions", padx=10, pady=10)
+        self.security_questions_frame = tk.LabelFrame(main_frame, text="Security Questions", padx=10, pady=10)
         self.question_labels = []
         self.answer_entries = []
         
@@ -57,8 +90,20 @@ class RecoveryFrame(tk.Frame):
             answer_entry.pack(fill="x", pady=2)
             self.answer_entries.append(answer_entry)
 
+        # Security Questions Help
+        security_help = tk.LabelFrame(main_frame, text="Security Questions Help", padx=10, pady=10)
+        security_help.pack(fill="x", padx=20, pady=10)
+        
+        security_help_text = """If you set up security questions during setup:
+• Answer them exactly as you did during setup
+• Answers are case-sensitive
+• If you didn't set up security questions, use recovery code instead
+• You must answer all questions to proceed"""
+        
+        tk.Label(security_help, text=security_help_text, justify="left", wraplength=400).pack(anchor="w")
+
         # New Password UI
-        self.new_password_frame = tk.LabelFrame(self, text="New Master Password", padx=10, pady=10)
+        self.new_password_frame = tk.LabelFrame(main_frame, text="New Master Password", padx=10, pady=10)
         tk.Label(self.new_password_frame, text="Enter New Master Password:").pack(anchor="w")
         
         # New password entry with show/hide toggle
@@ -89,11 +134,35 @@ class RecoveryFrame(tk.Frame):
         self.strength_label = tk.Label(self.new_password_frame, text="Strength: ")
         self.strength_label.pack(anchor="w")
 
+        # Password Requirements
+        password_req = tk.LabelFrame(main_frame, text="New Password Requirements", padx=10, pady=10)
+        password_req.pack(fill="x", padx=20, pady=10)
+        
+        req_text = """Your new master password should be:
+• At least 8 characters long
+• Include a mix of letters, numbers, and symbols
+• Easy for you to remember but hard for others to guess
+• Different from your previous password"""
+        
+        tk.Label(password_req, text=req_text, justify="left", wraplength=400).pack(anchor="w")
+
         # Buttons
-        button_frame = tk.Frame(self)
+        button_frame = tk.Frame(main_frame)
         button_frame.pack(pady=20)
         tk.Button(button_frame, text="Verify & Reset Password", command=self.verify_and_reset, bg="green", fg="white").pack(side="left", padx=10)
         tk.Button(button_frame, text="Back to Login", command=self.back_to_login).pack(side="left", padx=10)
+
+        # Final Warning
+        warning_frame = tk.LabelFrame(main_frame, text="Important Warning", padx=10, pady=10)
+        warning_frame.pack(fill="x", padx=20, pady=10)
+        
+        warning_text = """WARNING: This process will reset your master password!
+• Make sure you have the correct recovery information
+• Your new password will replace the old one
+• All your existing passwords will remain secure
+• Write down your new password and keep it safe"""
+        
+        tk.Label(warning_frame, text=warning_text, justify="left", wraplength=400, fg="red").pack(anchor="w")
 
         # Show initial UI
         self.show_method_ui()
